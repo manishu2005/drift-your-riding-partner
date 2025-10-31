@@ -1,0 +1,11 @@
+@import "tailwindcss";
+/* Add this to your global CSS (e.g., index.css or Tailwind @layer base) */
+.suggestion-box {
+  position: absolute;
+  z-index: 9999;
+  background-color: #001219;
+  border: 1px solid #0891b2;
+  border-radius: 0.5rem;
+  max-height: 12rem;
+  overflow-y: auto;
+}
