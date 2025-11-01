@@ -1,5 +1,5 @@
 import { io } from "socket.io-client";
-
+const BASE_URL=import.meta.env.VITE_BACKEND_URL;
 const SOCKET_URL = `${BASE_URL}`;
 
 export const socket = io(SOCKET_URL, {
