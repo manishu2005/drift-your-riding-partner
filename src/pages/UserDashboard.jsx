@@ -5,6 +5,8 @@ import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import axios from "axios";
 import { socket, ensureSocketAuth } from "../socket";
+const BASE_URL = import.meta.env.VITE_BACKEND_URL;
+
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -266,7 +268,7 @@ const requestRide = async () => {
   }
 
   if (!startCoords || !endCoords) {
-    console.log("🚨 Missing coordinates:", { startCoords, endCoords });
+    console.log(" Missing coordinates:", { startCoords, endCoords });
     alert("Please click 'Show Routes & Estimates' first to get route details!");
     return;
   }
@@ -291,7 +293,7 @@ const requestRide = async () => {
     fare: numericFare,
   };
 
-  console.log("📤 Sending payload:", payload, "socket connected:", !!socket?.connected);
+  console.log(" Sending payload:", payload, "socket connected:", !!socket?.connected);
 
   // Prefer socket path if available
   if (socket && socket.connected) {
@@ -299,10 +301,10 @@ const requestRide = async () => {
     try {
       socket.emit("create_ride", payload, (res) => {
         ackCalled = true;
-        console.log("📥 Server response (socket):", res);
+        console.log(" Server response (socket):", res);
         if (res?.success) {
           setRide(res.ride);
-          alert("✅ Ride request sent successfully!");
+          alert("Ride request sent successfully!");
           setRideStatus("Waiting for captain...");
           setAssignedRideId(res.ride._id);
         } else {
@@ -330,14 +332,14 @@ const requestRide = async () => {
   // Fallback HTTP POST if socket path fails
   const fallbackHttpCreateRide = async (payload) => {
     try {
-      const res = await axios.post("http://localhost:5000/api/rides", payload, { withCredentials: true });
+      const res = await axios.post(`${BASE_URL}/api/user/rides`, payload, { withCredentials: true });
       console.log("HTTP ride create response:", res.data);
       if (res.data?.success || res.data?.ride) {
         const rideObj = res.data.ride || res.data;
         setRide(rideObj);
         setRideStatus("Waiting for captain...");
         setAssignedRideId(rideObj._id);
-        alert("✅ Ride request sent successfully");
+        alert(" Ride request sent successfully");
       } else {
         alert(res.data?.message || "Failed to create ride via HTTP fallback");
       }
